@@ -1,0 +1,38 @@
+#!/usr/bin/node
+
+
+let http = require("http")
+
+let mongo_client = require("mogodb").MongoClient;
+
+let url = "mongodb://localhost/tffhd";
+
+console.log("Iniciando script mongo-http");
+
+mongo_client.connect(url, function(error, db){
+	console.log("Dentro de Mongodb");
+
+	if (error)
+	{
+		console.log("Error");
+		return;
+	}
+
+	let db = conn.db("tffhd");
+
+	db.collection("characters").find();
+	console.log(characters);
+
+});
+
+
+/*
+http.createServer(function(req, res){
+		res.writeHead(200);
+
+		let saludo = "aaaaaa";
+
+		res.end(saludo)
+}).listen(1095);
+
+*/

@@ -1,0 +1,49 @@
+
+<html>
+<head>
+
+<title>Too Fast Family HD: The Web App</title>
+
+</head>
+
+<body>
+
+<h1>Too Fast Family HD: The Web App</h1>
+<main>
+<section
+
+</section>
+</main>
+
+<script>
+
+function wirte_character_list (data)
+{
+	let list = "";
+	for (let i = 0; i < data.length; i++){
+		list += "<li>"+data[i].name+"</li>";
+		}
+
+	document.getElementById("characters-list").innerHTML = list;
+
+}
+
+let characters_interval = setInterval(function(){
+	fetch("/characters")
+	.then(response => response.json())
+	.then(data => write_characters_list(data));
+}, 2000);
+
+fetch("/characters")
+
+	/*.then((response){
+	return response.json();*/
+	}).then(response => response.json())(data){
+
+	.then(data => console.log(data));
+});
+
+</script>
+</body>
+
+</html>

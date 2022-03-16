@@ -10,9 +10,16 @@
 
 <h1>Too Fast Family HD: The Web App</h1>
 <main>
-<section
-
+<section id="characters">
+	<h2>characters => Name:</h2>
+	<ul id = "characters-list">"
+	</ul>
 </section>
+<section id = "items">
+	<h2>items => Item:</h2>
+	<ul id = "items-list">
+	</ul>
+
 </main>
 
 <script>
@@ -31,18 +38,29 @@ function wirte_character_list (data)
 let characters_interval = setInterval(function(){
 	fetch("/characters")
 	.then(response => response.json())
-	.then(data => write_characters_list(data));
+	.then(data => write_character_list(data));
 }, 2000);
 
 fetch("/characters")
+	.then(response => response.json())
+	.then(data => write_characters_list(data));
 
-	/*.then((response){
-	return response.json();*/
-	}).then(response => response.json())(data){
+function write_item_list (data)
+{
+	let list ="";
+	for (let i = 0;i < data.length; i++)
+	{
+		list += "<li>" + data[i].item + "</li>"
+	}
+	document.getElementById("items-list").innerHTML = list;
+}
 
-	.then(data => console.log(data));
-});
-
+let items_interval = setInterval(function()
+{
+	fetch("/items")
+	.then(response => response.json())
+	.then(data => write_item_list(data));
+}, 2000);
 </script>
 </body>
 

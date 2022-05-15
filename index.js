@@ -1,9 +1,11 @@
 #!/usr/bin/node
 
-let html = require("http");
-let fs = require ("fs");
-let _id = require("mongodb").ObjectID;
+let http = require("http");
+let fs = require("fs");
+
 let mongo_client = require("mongodb").MongoClient;
+let ObjectId = require("mongodb").ObjectID;
+
 
 let url = "mongodb://localhost/";
 
@@ -12,90 +14,88 @@ let db;
 console.log("Iniciando script mongo-http");
 
 mongo_client.connect(url, function(error, conn){
-    console.log("Dentro de MongoDB");
+	console.log("Dentro de MongoDB");
 
-    if (error){
-        console.log("ERROR!!!");
-        return;
-    }
+	if (error){
+		console.log("ERROR!!!");
+		return;
+	}
 
-    db = conn.db("tffhd");
+	db = conn.db("tffhd");
 
 });
 
-function send_data_list(db, req, res)
+
+function send_data_list (db, req, res)
 {
-    let col = "";
+	let col = "";
 
-if (req.url == "/characters")
-    col = "characters";
-else if (req.url == "/items")
-    col = "items";
-else{
-    res.end();
-    return;
+	if (req.url == "/characters")
+		col = "characters";
+	else if (req.url == "/items")
+		col = "items";
+	else{
+		res.end();
+		return;
+	}
+
+	let col_data = db.collection(col).find({});
+
+	col_data.toArray(function(err, data){
+		let string = JSON.stringify(data);
+
+		res.end(string);
+	});
 }
 
-let col_data = db.collection(col).find();
 
-col_data.toArray(function(err,data){
-let string = JSON.stringify(data);
+http.createServer(function(req, res){
+	res.writeHead(200);
 
-res.end(string);
-});
-}
+	if (req.url == "/"){
+		fs.readFile("index.html", function (err, data){
+			res.writeHead(200, {"Content-Type": "text/html"});
+			res.end(data);
+		});
 
-
-
-html.createServer(function(req, res){
-    res.writeHead(200);
-
-    if (req.url == "/"){
-        fs.readFile("index.html", function (err, data) {
-            res.writeHead(200, {"Content-Type": "text/html"});
-            res.end(data);
-        });
-
-        return;
-    }
-
-    let col = "";
-
-    req.url.split("/");
-    console.log(url);
+		return;
+	}
 
 
-if (url.length == 2)
-send_data_list(db,res);
-else
-{
-    if(url[2].length != 24)
-    {
-        res.end();
-        return;
-    }
-    if (url[1] == "characters")
-    {
-        let id = new _id(url[2])
-        let col_data = db.collection("characters").find({"_id":obj_id});
+	let url = req.url.split("/");
 
-        col_data.toArray(function(err,data){
-        let string = JSON.stringify(data);
 
-        res.end(string);
-    });
-    }
-    else if (url[1] == "items")
-    {
-        let id = new _id(url[2]);
+	if (url.length == 2){
+		send_data_list(db, req, res);
 
-        let col_data = db.collection("items").find({"_id":obj_id},{projection: {_id:1, item:1}});
+		return;
+	}
+	if (url[1] == "characters"){
+		let obj_id = new ObjectId(url[2]);
 
-        col_data.toArray(function(err, data){
-            let string = JSON.stringify(data);
+		let col_data = db.collection("characters").find({"_id":obj_id});
 
-            res.end(string);
-    });
-}
-}
+		col_data.toArray(function(err, data){
+			let string = JSON.stringify(data);
+
+			res.end(string);
+		});
+	}
+	else if (url[1] == "items") {
+		let obj_id = new ObjectId(url[2]);
+		let col_data = db.collection("items").find({"_id":obj_id},{projection: {_id:1, item:1} });
+		col_data.toArray(function(err, data){
+			let string = JSON.stringify(data);
+			res.end(string);
+		});
+	}
+	else if (url[1] == "remove") {
+		db.collection("characters").deleteOne({"id_character":parseInt(url[2])});
+		res.end("Deleted");
+	}
+	else if (url[1] == "delete"){
+		db.collection("items").deleteOne({"id_item":parseInt(url[2])});
+		res.end("Deleted");
+	}
+
 }).listen(1095);

@@ -1,74 +1,80 @@
+<!DOCTYPE html>
 <html>
-<head>
 
-<title>Too Fast Family HD: The Web App</title>
+<head>
+<title>mongodb</title>
 
 </head>
 
 <body>
 
+<header>
 <h1>Too Fast Family HD: The Web App</h1>
+</header>
+
 <main>
 <section id="characters">
-    <h2> Name:</h2>
-    <ul id = "characters-list">"
-    </ul>
+	<h3>Characters</h3>
+	<ul id="characters-list">
+	
+	</ul>
 </section>
-<section id = "items">
-    <h2> Item:</h2>
-    <ul id = "items-list">
-    </ul>
+
+<section id="items">
+	<h3>Items</h3>
+	<ul id="items-list">
+
+	</ul>
+</section>
 
 </main>
-
 <script>
+let list;
 
-function load_data_characters()
-{
-    fetch ("/characters")
-    .then(response => response.json());
-    .then(data => write_character_list(data));
-}
-
-function load_data_item()
-{
-	fetch("/items")
-	.then(response => response.json());
-	.then (data => write_item_list(data));
-}
-function wirte_character_list (data)
-{
-    let list = "";
-    for (let i = 0; i < data.length; i++){
-        list += '<li><a href="/characters'+data[i]._id+'">'+data[i].name+'</a></li>';
-        }
-
-    document.getElementById("characters-list").innerHTML = list;
-
-}
-
-let characters_interval = setInterval(function(){
-   load_data_characters();
-}, 2000);
-
-load_data_characters();
-
-function write_item_list (data)
-{
-    let list ="";
-    for (let i = 0;i < data.length; i++)
-    {
-        list += "<li>" + data[i].item + "</li>"
-    }
-    document.getElementById("items-list").innerHTML = list;
-}
-
-let items_interval = setInterval(function()
-{
-    load_data_item();
-}, 2000);
-load_data_item();
+	function fetchCharacters()
+	{
+		fetch("/characters")
+		.then(response => response.json())
+		.then(data => charactersLoad(data));
+	}
+	function charactersLoad(data) 
+	{
+		list = "";
+		for(let i=0; i<data.length; i++)
+			{
+			list += '<li><a href="/characters/'+data[i]._id+'">'+data[i].name+'</a> ';
+			list += '<a href="/removeC/'+data[i].id_character+'">X</a></li>';
+			}
+		document.getElementById("characters-list").innerHTML = list;
+	}
+	let characters_interval= setInterval(function() 
+	{
+		fetchCharacters();
+		}, 2000);
+		fetchCharacters();
+		function fetchItems()
+		{
+			fetch("/items")
+			.then(response => response.json())
+			.then(data => itemsLoad(data));
+		}
+		function itemsLoad(data) 
+	{
+		list = "";
+		for(let i=0; i<data.length; i++) 
+		{
+		list += '<li><a href="/items/'+data[i]._id+'">'+data[i].item+'</a>	';
+			list += '<a href="/removeItem/'+data[i].id_item+'">X</a></li>';
+		}
+			document.getElementById("items-list").innerHTML = list;
+	}
+	let items_interval= setInterval(function() 
+	{
+		fetchItems();
+	}, 2000);
+fetchItems();
 </script>
+
 </body>
 
 </html>

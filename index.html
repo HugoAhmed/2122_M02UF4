@@ -42,15 +42,12 @@ let list;
 		list = "";
 		for(let i=0; i<data.length; i++)
 			{
-			list += '<li><a href="/characters/'+data[i]._id+'">'+data[i].name+'</a> ';
-			list += '<a href="/removeC/'+data[i].id_character+'">X</a></li>';
+			list += '<a href="/characters/'+data[i]._id+'">'+data[i].name+'</a> ';
+			list += '<a href="/removeC/'+data[i].id_character+'"> x</a> <p>';
 			}
 		document.getElementById("characters-list").innerHTML = list;
 	}
-	let characters_interval= setInterval(function() 
-	{
-		fetchCharacters();
-		}, 2000);
+
 		fetchCharacters();
 		function fetchItems()
 		{
@@ -63,15 +60,11 @@ let list;
 		list = "";
 		for(let i=0; i<data.length; i++) 
 		{
-		list += '<li><a href="/items/'+data[i]._id+'">'+data[i].item+'</a>	';
-			list += '<a href="/removeItem/'+data[i].id_item+'">X</a></li>';
+		list += '<a href="/items/'+data[i]._id+'">'+data[i].item+'</a>	';
+		list += '<a href="/removeI/'+data[i].id_item+'">x</a>';
 		}
 			document.getElementById("items-list").innerHTML = list;
 	}
-	let items_interval= setInterval(function() 
-	{
-		fetchItems();
-	}, 2000);
 fetchItems();
 </script>
 
